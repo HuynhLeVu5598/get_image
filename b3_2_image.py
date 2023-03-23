@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 import requests
 from selenium.webdriver.support.ui import Select
 import os
@@ -13,11 +14,15 @@ import pyperclip
 import time
 
 driver = webdriver.Chrome()
+
 driver.get("https://googpt.ai/?hl=vi")
 
 allpath = "test1/*.jpg"
+
 for file_path in glob.glob(allpath):
     file_name = os.path.basename(file_path)
+    file_name = file_name[:-4]
+    file_name = " ".join(file_name.split("_"))
     with open(f"description.txt", "a", encoding="utf-8") as write_file:
         write_file.write(file_name)
         write_file.write("\n")
@@ -34,16 +39,16 @@ for file_path in glob.glob(allpath):
         # Enter text into the input field
         input_field.send_keys(f"Description for image {file_name} for SEO")
 
-        button = driver.find_element(By.ID, "search-button")
-
         # Wait for the button to be clickable
         wait = WebDriverWait(driver, 100)
         button = wait.until(EC.element_to_be_clickable((By.ID, "search-button")))
 
         # Click the button
         button.click()
-
+        dem = 0
+        sleep(8)
         while True:
+            sleep(2)
             # Wait for the div element to be present
             wait = WebDriverWait(driver, 100)
             div_element = wait.until(
@@ -52,9 +57,22 @@ for file_path in glob.glob(allpath):
 
             # Get the text content inside the div element
             content = div_element.text
+            dem += 1
+            if dem == 4:
+                # Wait for the button to be clickable
+                wait = WebDriverWait(driver, 100)
+                button = wait.until(
+                    EC.element_to_be_clickable((By.ID, "search-button"))
+                )
+
+                # Click the button
+                button.click()
+                dem = 0
+                sleep(6)
 
             if content != "":
                 break
+
         if (not content.startswith("Sorry")) and (
             not content.startswith("As an AI language model")
         ):
