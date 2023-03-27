@@ -1,3 +1,8 @@
+### RUN 1 cmd
+# FOR /L %i IN (1,1,10) DO start "python" /B python b1_2.py %i
+### RUN multi cmd
+# FOR /L %i IN (1,1,10) DO start cmd /k python b1_2.py %i
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -8,6 +13,7 @@ from selenium.webdriver.support.ui import Select
 import os
 from time import sleep
 import glob
+import sys
 
 
 def convert_name(s):
@@ -45,19 +51,23 @@ def find_most_common_element(file_names, all_name):
 
 
 dir_get = "txt_n"
-choose_file = int(input("choose name folder save: "))
+# choose_file = int(input("choose name folder save: "))
+choose_file = int(sys.argv[1])
+
 download_dir = f"C:/Users/BTTB/Downloads/{str(choose_file)}"
 if not os.path.exists(download_dir):
     os.makedirs(download_dir)
+
+sleep(10 * choose_file)
 
 driver = webdriver.Chrome("W:/Document/chromedriver_win32/chromedriver.exe")
 
 driver.get("chrome://settings/downloads")
 
-sleep(6)
+sleep(10)
 
 driver.get("https://skybox.blockadelabs.com/")
-sleep(10)
+sleep(8)
 name = 0
 init_length = len(os.listdir(download_dir))
 
